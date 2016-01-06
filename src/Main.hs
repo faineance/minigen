@@ -69,9 +69,12 @@ compile (e :*: e') = compile e >>>
                      compile e' >>>
                      op mul
 
-assemble :: X86_64 n n -> [Instr]
+assemble :: X86_64 n (Succ n) -> [Instr]
 assemble program = snd $ runIdentity (runKleisli (elimWriter program) initial)
     where initial = undefined :: n
 
+test :: [Instr]
+test = assemble (compile (Lit 10 :+: Lit 5 :*: Lit 3))
 
--- (assemble (compile (Lit 10 :+: Lit 5) :*: Lit 3))
+main :: IO ()
+main = print test
