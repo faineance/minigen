@@ -1,5 +1,4 @@
 {-# LANGUAGE Arrows    #-}
-{-# LANGUAGE DataKinds #-}
 module Main where
 
 import           Control.Arrow
