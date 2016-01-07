@@ -1,6 +1,6 @@
 {-# LANGUAGE Arrows    #-}
-{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE GADTs     #-}
+
 module Main where
 
 import           Control.Arrow
