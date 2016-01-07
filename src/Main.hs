@@ -22,13 +22,7 @@ data Instr = Push Register
         | Mul Register Register
         deriving Show
 
--- Input lang
-
--- data Expr = Lit Int
---             | Expr :+: Expr
---             | Expr :*: Expr
---           deriving Show
-
+-- Input lang 
 data Expr t where
     Lit :: Int -> Expr Int
     (:+:) :: Expr Int -> Expr Int -> Expr Int
