@@ -29,7 +29,7 @@ data Expr t where
     (:*:) :: Expr Int -> Expr Int -> Expr Int
 
 instance Show (Expr t) where
-    show (Lit i) = "Lit " ++ show i
+    show (Lit i) = show i
     show ((:+:) e e') = show e ++ " + " ++ show e'
     show ((:*:) e e') = show e ++ " + " ++ show e'
 
