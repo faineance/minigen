@@ -1,2 +1,1 @@
 # minigen
-Dependently typed language.
