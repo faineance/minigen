@@ -1,6 +1,6 @@
 {-# LANGUAGE Arrows    #-}
 {-# LANGUAGE GADTs     #-}
-
+{-# LANGUAGE DataKinds #-}
 module Main where
 
 import           Control.Arrow
@@ -57,10 +57,10 @@ pop :: Register -> X86_64 (Succ n) n
 pop reg = output $ Pop reg
 
 add :: Register -> Register -> X86_64 n n
-add target param = output $ Add target param
+add r r' = output $ Add r r'
 
 mul :: Register -> Register -> X86_64 n n
-mul target param = output $ Mul target param
+mul r r' = output $ Mul r r'
 
 compile :: Expr t -> X86_64 n (Succ n)
 compile (Lit n) = set RAX n >>>
