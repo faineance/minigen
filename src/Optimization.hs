@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances, GADTs, OverlappingInstances #-}
+{-# LANGUAGE FlexibleInstances, GADTs #-}
 
 
 module Optimization where
@@ -9,7 +9,7 @@ class Optimisable a where
     optimize :: a -> a
     optimize = id
 
-instance (Optimisable a, Functor f) => Optimisable (f a) where
+instance {-# OVERLAPPABLE #-} (Optimisable a, Functor f) => Optimisable (f a) where
     optimize = fmap optimize
 
 instance Optimisable (Expr t) where
