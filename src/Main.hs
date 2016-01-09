@@ -15,6 +15,7 @@ data Succ a
 data Register = RAX | RBX deriving (Show, Eq)
 
 -- Target machine
+type Program = [Instr]
 data Instr = Push Register
         | Pop Register
         | Set Register Int
@@ -22,7 +23,7 @@ data Instr = Push Register
         | Mul Register Register
         deriving Show
 
--- Input lang 
+-- Input lang
 data Expr t where
     Lit :: Int -> Expr Int
     (:+:) :: Expr Int -> Expr Int -> Expr Int
@@ -80,13 +81,16 @@ assemble program = snd $ runIdentity $ runKleisli (elimWriter program) initial
 
 
 -- Cleanup needed ( maybe fixUntil :: (a -> a -> Bool) -> (a -> a) -> a -> a )
-optimize :: [Instr] -> [Instr]
+type Optimization = Program -> Program
+
+
+optimize :: Optimization
+optimize (x : xs) =
+  case x : optimize xs of
+    Push r : Pop r' : xs' | r == r' -> xs'
+    Set r v : x'@(Set r' v') : xs' | r == r' -> x' : xs'
+    xs' -> xs'
 optimize [] = []
-optimize (Push r : Pop r' : xs) | r == r' = optimize xs
-optimize (Push x : Push y : Pop y' : Pop x': xs) | x == x' && y == y' = optimize xs
-optimize (Push x : Push y : Push z : Pop z' : Pop y' : Pop x': xs) | x == x' && y == y' && z == z' = optimize xs
-optimize (Set v r : Set v' r' : xs) | r == r' && v == v' = optimize xs
-optimize (x : xs) = x : optimize xs
 
 test :: [Instr]
 test = optimize $ assemble $ compile (Lit 10 :+: Lit 5 :*: Lit 3)
