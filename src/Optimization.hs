@@ -14,8 +14,10 @@ instance {-# OVERLAPPABLE #-} (Optimisable a, Functor f) => Optimisable (f a) wh
 
 instance Optimisable (Expr t) where
     optimize (Lit v) = Lit v
-    optimize (e :*: e') = e :*: e'
-    optimize (e :+: e') = e :+: e'
+    optimize (Lit v :+: Lit v') = Lit (v + v')
+    optimize (Lit v :*: Lit v') = Lit (v * v')
+    optimize (e :*: e') = optimize e :*: optimize e'
+    optimize (e :+: e') = optimize e :+: optimize e'
 
 instance Optimisable [Instr] where
     optimize (Push r : Pop r' : xs) | r == r' = xs

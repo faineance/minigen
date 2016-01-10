@@ -17,11 +17,16 @@ data Instr = Push Register
         deriving Show
 
 -- Input lang
-data Expr t where
+data Expr t  where
     Lit :: Int -> Expr Int
-    (:+:) :: Expr Int -> Expr Int -> Expr Int
-    (:*:) :: Expr Int -> Expr Int -> Expr Int
+    -- App :: Expr t -> Expr t
+    (:+:) :: Expr t -> Expr t -> Expr t
+    (:*:) :: Expr t -> Expr t -> Expr t
 
+eval :: (Num t) => Expr t -> t
+eval (Lit v) = v
+eval (e :+: e') = eval e + eval e'
+eval (e :*: e') = eval e * eval e'
 
 instance Show (Expr t) where
     show (Lit i) = show i
