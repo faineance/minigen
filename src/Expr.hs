@@ -5,7 +5,7 @@ module Expr  where
 data Zero
 data Succ a
 
-data Register = RAX | RBX deriving (Show, Eq)
+data Register = EAX | EBX deriving (Show, Eq)
 
 -- Target machine
 type Program = [Instr]

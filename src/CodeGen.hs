@@ -10,10 +10,10 @@ import Expr
 type X86_64 a b = WriterArrow [Instr] (Kleisli Identity) a b
 
 op :: (Register -> Register -> X86_64 n n) -> X86_64 (Succ (Succ n)) (Succ n)
-op instr = pop RAX >>>
-           pop RBX >>>
-           instr RAX RBX >>>
-           push RAX
+op instr = pop EAX >>>
+           pop EBX >>>
+           instr EAX EBX >>>
+           push EAX
 
 output :: Instr -> X86_64 n m
 output instr = proc _ -> do

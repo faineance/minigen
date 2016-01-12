@@ -1,6 +1,5 @@
 {-# LANGUAGE FlexibleInstances, GADTs #-}
 
-
 module Optimization where
 import Expr
 
@@ -8,9 +7,6 @@ import Expr
 class Optimisable a where
     optimize :: a -> a
     optimize = id
-
-instance {-# OVERLAPPABLE #-} (Optimisable a, Functor f) => Optimisable (f a) where
-    optimize = fmap optimize
 
 instance Optimisable (Expr t) where
     optimize (Lit v) = Lit v
@@ -20,6 +16,7 @@ instance Optimisable (Expr t) where
     optimize (e :+: e') = optimize e :+: optimize e'
 
 instance Optimisable [Instr] where
-    optimize (Push r : Pop r' : xs) | r == r' = xs
-    optimize (Set r v : x'@(Set r' v') : xs ) = x' : xs
+    optimize (Push r : Pop r' : xs) | r == r' = optimize xs
+    optimize (Set r v : x'@(Set r' v') : xs ) = optimize (x' : xs)
     optimize (x : xs) = x : optimize xs
+    optimize [] = []
