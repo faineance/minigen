@@ -36,8 +36,8 @@ mul :: Register -> Register -> X86_64 n n
 mul r r' = output $ Mul r r'
 
 compile :: Expr t -> X86_64 n (Succ n)
-compile (Lit n) = set RAX n >>>
-                    push RAX
+compile (Lit n) = set EAX n >>>
+                    push EAX
 
 compile (e :+: e') = compile e >>>
                      compile e' >>>

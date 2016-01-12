@@ -18,5 +18,7 @@ instance Optimisable (Expr t) where
 instance Optimisable [Instr] where
     optimize (Push r : Pop r' : xs) | r == r' = optimize xs
     optimize (Set r v : x'@(Set r' v') : xs ) = optimize (x' : xs)
+    optimize (Set r v : xs ) = optimize (Xor r (Left r) : Or r (Right v): xs)
+
     optimize (x : xs) = x : optimize xs
     optimize [] = []

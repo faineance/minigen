@@ -5,15 +5,23 @@ module Expr  where
 data Zero
 data Succ a
 
-data Register = EAX | EBX deriving (Show, Eq)
+
 
 -- Target machine
+data Register = EAX
+              | EBX
+                deriving (Show, Eq)
+
+
+
 type Program = [Instr]
 data Instr = Push Register
         | Pop Register
         | Set Register Int
         | Add Register Register
         | Mul Register Register
+        | Xor Register (Either Register Int)
+        | Or Register (Either Register Int)
         deriving Show
 
 -- Input lang
