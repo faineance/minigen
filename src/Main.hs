@@ -6,7 +6,7 @@ import CodeGen
 import Optimization
 
 test :: [Instr]
-test =  optimize $ assemble $ compile (Lit 10 :+: Lit 5 :*: Lit 3)
+test =  optimize $ assemble $ compile $ optimize (Lit 10 :+: Lit 5 :*: Lit 3)
 
 main :: IO ()
 main = print test
