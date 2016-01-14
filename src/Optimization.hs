@@ -2,7 +2,7 @@
 
 module Optimization where
 import Expr
-
+import X86_64
 
 class Optimisable a where
     optimize :: a -> a

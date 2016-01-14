@@ -4,6 +4,7 @@ import           Control.Monad.Identity
 import Expr
 import CodeGen
 import Optimization
+import X86_64
 
 test :: [Instr]
 test =  optimize $ assemble $ compile $ optimize (Lit 10 :+: Lit 5 :*: Lit 3)

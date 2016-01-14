@@ -6,7 +6,7 @@ import           Control.Arrow.Operations
 import           Control.Arrow.Transformer.Writer
 import           Control.Monad.Identity
 import Expr
-
+import X86_64
 type X86_64 a b = WriterArrow [Instr] (Kleisli Identity) a b
 
 op :: (Register -> Register -> X86_64 n n) -> X86_64 (Succ (Succ n)) (Succ n)
