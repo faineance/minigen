@@ -1,6 +1,24 @@
 module X86_64 where
+import Control.Monad.Trans.Writer
+import Control.Monad.Trans.State
+import Data.Word
+import  Control.Monad.Trans.Class
 
 -- Target machine
+
+type Assemble = WriterT [Word8] (State Word8)
+
+emit :: Word8 -> Assemble ()
+emit x = tell [x] >> lift (modify (+ 1))
+
+-- bytes :: Integral n => n -> [n]
+-- bytes 0 = []
+-- bytes i = reverse . lastDigit : bytes rest
+--     where (rest, lastDigit) = quotRem i 10
+
+-- imm :: Integral a => a -> Assemble ()
+-- imm x =  emit bytes x
+
 
 data Bits = B64 | B32 | B16 | BH8 | BL8 deriving (Show)
 
@@ -35,7 +53,7 @@ data Instr = Push Register
         | Mul Register Register
         | Xor Register (Either Register Int)
         | Or Register (Either Register Int)
-        | Syscall
+        | Label
         deriving Show
 
 

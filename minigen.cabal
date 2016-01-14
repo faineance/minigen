@@ -20,4 +20,4 @@ executable minigen
     base -any,
     mtl -any,
     arrows -any,
-    pretty -any
+    transformers -any
