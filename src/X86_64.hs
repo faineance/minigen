@@ -8,16 +8,19 @@ import  Control.Monad.Trans.Class
 
 type Assemble = WriterT [Word8] (State Word8)
 
-emit :: Word8 -> Assemble ()
-emit x = tell [x] >> lift (modify (+ 1))
+emit :: [Word8] -> Assemble ()
+emit x = tell x >> lift (modify (+ 1))
 
--- bytes :: Integral n => n -> [n]
--- bytes 0 = []
--- bytes i = reverse . lastDigit : bytes rest
---     where (rest, lastDigit) = quotRem i 10
+ret :: Assemble ()
+ret = emit [0xc3]
 
--- imm :: Integral a => a -> Assemble ()
--- imm x =  emit bytes x
+bytes :: Integral n => n -> [Word8]
+bytes 0 = []
+bytes i =  fromIntegral lastByte : bytes rest
+    where (rest, lastByte) = quotRem i 256
+
+imm :: Integral a => a -> Assemble ()
+imm = emit . bytes
 
 
 data Bits = B64 | B32 | B16 | BH8 | BL8 deriving (Show)
@@ -53,7 +56,7 @@ data Instr = Push Register
         | Mul Register Register
         | Xor Register (Either Register Int)
         | Or Register (Either Register Int)
-        | Label
+        | Ret
         deriving Show
 
 
