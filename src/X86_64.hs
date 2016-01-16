@@ -2,17 +2,19 @@ module X86_64 where
 import Control.Monad.Trans.Writer
 import Control.Monad.Trans.State
 import Data.Word
+
+import Data.Int
 import  Control.Monad.Trans.Class
 
 -- Target machine
+type Addr = Word32
 
+data Prim = PInt Int64 | PReg Register
+                        deriving Show
 type Assemble = WriterT [Word8] (State Word8)
 
 emit :: [Word8] -> Assemble ()
 emit x = tell x >> lift (modify (+ 1))
-
-ret :: Assemble ()
-ret = emit [0xc3]
 
 bytes :: Integral n => n -> [Word8]
 bytes 0 = []
@@ -22,6 +24,21 @@ bytes i =  fromIntegral lastByte : bytes rest
 imm :: Integral a => a -> Assemble ()
 imm = emit . bytes
 
+ret :: Assemble ()
+ret = emit [0xc3]
+
+push :: Register -> Assemble ()
+push r = emit [0x50 + reg r]
+
+pop :: Register -> Assemble ()
+pop r = emit [0x58 + reg r]
+
+prologue :: Assemble ()
+prologue = undefined
+
+
+epilogue :: Assemble ()
+epilogue = undefined
 
 data Bits = B64 | B32 | B16 | BH8 | BL8 deriving (Show)
 
@@ -47,15 +64,50 @@ data Register =   RAX | EAX  | AX | AH |  AL -- Accumulator
                 | R15 | R15D | R15W | R15B
                 deriving (Show, Eq)
 
+rax :: Word8
+rax = reg RAX
+
+rbx :: Word8
+rbx = reg RBX
+
+rcx :: Word8
+rcx = reg RCX
+
+rdx :: Word8
+rdx = reg RDX
+
+rsi :: Word8
+rsi = reg RSI
+
+rdi :: Word8
+rdi = reg RDI
+
+rsp :: Word8
+rsp = reg RSP
+
+rbp :: Word8
+rbp = reg RBP
+
+reg :: Register -> Word8
+reg x = case x of
+        RAX -> 0
+        RCX -> 1
+        RDX -> 2
+        RBX -> 3
+        RSP -> 4
+        RBP -> 5
+        RSI -> 6
+        RDI -> 7
 
 type Program = [Instr]
 data Instr = Push Register
         | Pop Register
-        | Set Register Int
-        | Add Register Register
-        | Mul Register Register
-        | Xor Register (Either Register Int)
-        | Or Register (Either Register Int)
+        | Set Register Prim
+        | Add Register Prim
+        | Mul Register Prim
+        | Xor Register Prim
+        | Or Register Prim
+        | Call Addr
         | Ret
         deriving Show
 
