@@ -33,12 +33,19 @@ push r = emit [0x50 + reg r]
 pop :: Register -> Assemble ()
 pop r = emit [0x58 + reg r]
 
+
+
+func :: Assemble () -> Assemble ()
+func x = prologue >> x >> epilogue
+
 prologue :: Assemble ()
 prologue = undefined
 
-
 epilogue :: Assemble ()
 epilogue = undefined
+
+nop :: Assemble ()
+nop = emit [0x90]
 
 data Bits = B64 | B32 | B16 | BH8 | BL8 deriving (Show)
 
@@ -53,7 +60,7 @@ data Register =   RAX | EAX  | AX | AH |  AL -- Accumulator
                 | RSP | ESP  | SP | SPL -- Stack pointer for top address of the stack.
                 | RBP | EBP  | BP | BPL -- Stack base pointer for holding the address of the current stack frame.
 
-
+                -- todo rex and all that jazz
                 | R8  | R8D  | R8W  | R8B
                 | R9  | R9D  | R9W  | R9B
                 | R10 | R10D | R10W | R10B
@@ -102,11 +109,12 @@ reg x = case x of
 type Program = [Instr]
 data Instr = Push Register
         | Pop Register
-        | Set Register Prim
-        | Add Register Prim
-        | Mul Register Prim
-        | Xor Register Prim
-        | Or Register Prim
+        | Set Register Int
+        | Mov Register Register
+        | Add Register Register
+        | Mul Register Register
+        | Xor Register (Either Register Int)
+        | Or Register (Either Register Int)
         | Call Addr
         | Ret
         deriving Show
